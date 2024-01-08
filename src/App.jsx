@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './reset.css';
+import './style.css';
 
 function App() {
   const [dados, setDados] = useState('');
@@ -46,41 +47,44 @@ function App() {
   }
 
   return (
-    <>
-      <h1>To Do List</h1>
-      <input type="text" value={dados} onChange={PegarDados} />
-      <button onClick={AdicionarTarefa}>Adicionar Tarefa</button>
-      <div>
-        <ul>
-          {tarefas.map((tarefa, index) => (
-            <li key={index}>
-              <input
-                type="checkbox"
-                checked={tarefa.concluida}
-                onChange={() => MarcarComoConcluida(index)}
-              />
-              {tarefaEmEdicao === index ? (
-                <>
-                  <input
-                    type="text"
-                    value={novoNome}
-                    onChange={(e) => setNovoNome(e.target.value)}
-                  />
-                  <button onClick={() => SalvarEdicao(index)}>Salvar</button>
-                  <button onClick={CancelarEdicao}>Cancelar</button>
-                </>
-              ) : (
-                <span style={{ textDecoration: tarefa.concluida ? 'line-through' : 'none' }}>
-                  {tarefa.nome}
-                  <button onClick={() => IniciarEdicao(index)}>Editar</button>
-                </span>
-              )}
-            </li>
-          ))}
-        </ul>
-        <button onClick={ExcluirTarefasMarcadas}>Excluir</button>
+    <div className='container'>
+      <div className='container__secundario'>
+        <h1>To Do List</h1>
+        <input className='inputDeDados' type="text" value={dados} onChange={PegarDados} placeholder='O que tenho que fazer...' />
+        <button className='botao__adicionar__tarefas' onClick={AdicionarTarefa}>Adicionar</button>
+        <div className='container__lista'>
+          <ul className='container__lista__conteudo'>
+            {tarefas.map((tarefa, index) => (
+              <li key={index}>
+                <input className='checkBox'
+                  type="checkbox"
+                  checked={tarefa.concluida}
+                  onChange={() => MarcarComoConcluida(index)}
+                />
+                {tarefaEmEdicao === index ? (
+                  <>
+                    <input
+                      type="text"
+                      value={novoNome}
+                      onChange={(e) => setNovoNome(e.target.value)}
+                    />
+                    <button onClick={() => SalvarEdicao(index)}>Salvar</button>
+                    <button onClick={CancelarEdicao}>Cancelar</button>
+                  </>
+                ) : (
+                  <span style={{ textDecoration: tarefa.concluida ? 'line-through' : 'none' }}>
+                    {tarefa.nome}
+                    <button onClick={() => IniciarEdicao(index)}>Editar</button>
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+          <button onClick={ExcluirTarefasMarcadas}>Excluir Tarefa</button>
+        </div>
       </div>
-    </>
+
+    </div>
   );
 }
 
