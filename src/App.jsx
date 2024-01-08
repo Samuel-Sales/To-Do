@@ -4,29 +4,45 @@ import './reset.css';
 function App() {
   const [dados, setDados] = useState('');
   const [tarefas, setTarefas] = useState([]);
+  const [tarefaEmEdicao, setTarefaEmEdicao] = useState(null);
+  const [novoNome, setNovoNome] = useState('');
 
   function PegarDados(event) {
     setDados(event.target.value);
   }
 
   function AdicionarTarefa() {
-    setTarefas([...tarefas, { nome: dados, concluida: false }]);
-    setDados('');
+    if (dados.trim() !== '') {
+      setTarefas([...tarefas, { nome: dados, concluida: false }]);
+      setDados('');
+    }
   }
 
-  function Editar() {
-    
-  }
-
-  function Excluir() {
-    const excluirTarefas = tarefas.filter((tarefa) => !tarefa.concluida);
-    setTarefas(excluirTarefas);
-  }
-
-  function CheckBox(check) {
+  function MarcarComoConcluida(index) {
     const novasTarefas = [...tarefas];
-    novasTarefas[check].concluida = !novasTarefas[check].concluida;
+    novasTarefas[index] = { ...novasTarefas[index], concluida: !novasTarefas[index].concluida };
     setTarefas(novasTarefas);
+  }
+
+  function ExcluirTarefasMarcadas() {
+    const tarefasNaoMarcadas = tarefas.filter((tarefa) => !tarefa.concluida);
+    setTarefas(tarefasNaoMarcadas);
+  }
+
+  function IniciarEdicao(index) {
+    setTarefaEmEdicao(index);
+    setNovoNome(tarefas[index].nome);
+  }
+
+  function SalvarEdicao(index) {
+    const novasTarefas = [...tarefas];
+    novasTarefas[index] = { ...novasTarefas[index], nome: novoNome };
+    setTarefas(novasTarefas);
+    setTarefaEmEdicao(null);
+  }
+
+  function CancelarEdicao() {
+    setTarefaEmEdicao(null);
   }
 
   return (
@@ -38,18 +54,34 @@ function App() {
         <ul>
           {tarefas.map((tarefa, index) => (
             <li key={index}>
-              <input type="checkbox" checked={tarefa.concluida} onChange={() => CheckBox(index)} />
-              <span style={{ textDecoration: tarefa.concluida ? 'line-through' : 'none' }}>
-                {tarefa.nome}
-              </span>
+              <input
+                type="checkbox"
+                checked={tarefa.concluida}
+                onChange={() => MarcarComoConcluida(index)}
+              />
+              {tarefaEmEdicao === index ? (
+                <>
+                  <input
+                    type="text"
+                    value={novoNome}
+                    onChange={(e) => setNovoNome(e.target.value)}
+                  />
+                  <button onClick={() => SalvarEdicao(index)}>Salvar</button>
+                  <button onClick={CancelarEdicao}>Cancelar</button>
+                </>
+              ) : (
+                <span style={{ textDecoration: tarefa.concluida ? 'line-through' : 'none' }}>
+                  {tarefa.nome}
+                  <button onClick={() => IniciarEdicao(index)}>Editar</button>
+                </span>
+              )}
             </li>
           ))}
         </ul>
-        <button onClick={Editar}>Editar</button>
-        <button onClick={Excluir}>Excluir</button>
+        <button onClick={ExcluirTarefasMarcadas}>Excluir</button>
       </div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
